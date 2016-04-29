@@ -1,0 +1,108 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>DemoSpark</groupId>
+	<artifactId>DemoSpark</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<properties>
+		<spark.version>1.4.1</spark.version>
+	</properties>
+
+	<dependencies>
+	
+		<dependency>
+			<groupId>jdk.tools</groupId>
+			<artifactId>jdk.tools</artifactId>
+			<version>1.7</version>
+			<scope>system</scope>
+			<systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>
+		</dependency>
+	
+
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka-clients</artifactId>
+			<version>0.9.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-streaming-kafka_2.10</artifactId>
+			<version>${spark.version}</version>
+		</dependency>
+
+		<!-- 2. Write to SOLR -->
+		<dependency>
+			<groupId>com.lucidworks.spark</groupId>
+			<artifactId>spark-solr</artifactId>
+			<version>2.0.0-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-hive-thriftserver_2.10</artifactId>
+			<version>${spark.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>spark-core_2.10</artifactId>
+					<groupId>org.apache.spark</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+	</dependencies>
+
+	<repositories>
+	<!-- 2. Write to SOLR -->
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</repository>
+	</repositories>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<shadedArtifactAttached>true</shadedArtifactAttached>
+							<shadedClassifierName>shaded</shadedClassifierName>
+							<filters>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
+								</filter>
+							</filters>
+							
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+	
+			
+		</plugins>
+	</build>
+</project>
